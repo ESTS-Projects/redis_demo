@@ -1,5 +1,8 @@
 version: "3.9"
 
+networks:
+  my_network:
+
 services:
   redis:
     container_name: redis_instance
@@ -10,6 +13,8 @@ services:
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
       - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+    networks:
+      - my_network
   api:
     build: .
     image: redis_demo
@@ -21,7 +26,10 @@ services:
       - redis
     environment:
       REDIS_PORT: 6379
-      REDIS_URL: redis://resasdis:6379
+      REDIS_HOST: redis
     volumes:
       - ./index.js:/app/index.js
-  
+    networks:
+      - my_network
+    links:
+      - redis
