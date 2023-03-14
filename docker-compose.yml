@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  redis:
+    container_name: redis_instance
+    image: redis/redis-stack-server:latest
+    restart: always
+    ports:
+      - 6379:6379
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+  api:
+    build: .
+    image: redis_demo
+    container_name: api_instance
+    restart: always
+    ports:
+      - 3000:3000
+    depends_on:
+      - redis
+    environment:
+      REDIS_PORT: 6379
+      REDIS_URL: redis://resasdis:6379
+    volumes:
+      - ./index.js:/app/index.js
+  
